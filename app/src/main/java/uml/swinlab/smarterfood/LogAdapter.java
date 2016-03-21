@@ -53,22 +53,16 @@ public class LogAdapter extends BaseAdapter{
         }
         viewHolder.foodInfo.setText(mList.get(position).foodInfo);
         viewHolder.timeInfo.setText(mList.get(position).startTime);
-        if(mList.get(position).isConfirmed.equals("yes")) {
-            viewHolder.checkState.setImageResource(R.drawable.check);
-        }
-        else{
-            viewHolder.checkState.setImageResource(R.drawable.cross);
-        }
+        viewHolder.checkState.setText(mList.get(position).getIsConfirmed());
         return v;
     }
 }
 
 class CompleteListViewHolder {
-    public TextView foodInfo, timeInfo;
-    public ImageView checkState;
+    public TextView foodInfo, timeInfo, checkState;
     public CompleteListViewHolder(View base) {
         foodInfo = (TextView) base.findViewById(R.id.food);
         timeInfo = (TextView) base.findViewById(R.id.time);
-        checkState = (ImageView) base.findViewById(R.id.check);
+        checkState = (TextView) base.findViewById(R.id.check);
     }
 }

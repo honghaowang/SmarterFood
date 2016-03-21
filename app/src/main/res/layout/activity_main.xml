@@ -16,5 +16,21 @@
 
     </ListView>
 
+    <Button
+        android:id="@+id/yesBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="YES"
+        android:onClick="yesClick"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"/>
 
+    <Button
+        android:id="@+id/noBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="NO"
+        android:onClick="noClick"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true" />
 </RelativeLayout>

@@ -48,7 +48,7 @@ public class S2Tservice extends Service {
                 if(msg.equals("Start")){
                     Log.e("Start", "---------->");
                     dataArray[0] = formatTime();
-                    Log.e("LogData", dataArray[1]);
+                    Log.e("LogData", dataArray[0]);
                 }
                 else if(msg.equals("End")){
                     Log.e("End", "--------------->");
@@ -62,11 +62,14 @@ public class S2Tservice extends Service {
             }
             if(intent.getAction().equals("startRecording")){
                 Log.d("Receiver", "Get start Recording");
+                initialRecognizer();
                 mSpeechRecognizer.startListening(mSpeechRecognizerIntent);
 
             }
             if(intent.getAction().equals("stopRecording")){
                 Log.d("Receiver", "Get stop recording");
+                mSpeechRecognizer.stopListening();
+                mSpeechRecognizer.cancel();
 
                 Log.e("Data", text);
 
@@ -113,15 +116,8 @@ public class S2Tservice extends Service {
         super.onCreate();
         speech = new T2Sservice(this);
 
-        //Initial Speech to Text
-        mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-        mSpeechRecognizer = SpeechRecognizer.createSpeechRecognizer(getApplicationContext());
-        mSpeechRecognizer.setRecognitionListener(new SpeechRecognitionListener());
-        mSpeechRecognizerIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-        mSpeechRecognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
-                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-        mSpeechRecognizerIntent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE,
-                this.getPackageName());
+        //initialRecognizer();
+
         //
         //mSpeechRecognizerIntent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 1);
         //
@@ -131,6 +127,18 @@ public class S2Tservice extends Service {
         filter.addAction("stopRecording");
         registerReceiver(receiverAtT2S,filter);
 
+    }
+
+    private void initialRecognizer(){
+        //Initial Speech to Text
+        mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        mSpeechRecognizer = SpeechRecognizer.createSpeechRecognizer(getApplicationContext());
+        mSpeechRecognizer.setRecognitionListener(new SpeechRecognitionListener());
+        mSpeechRecognizerIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        mSpeechRecognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+        mSpeechRecognizerIntent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE,
+                this.getPackageName());
     }
 
     @Override

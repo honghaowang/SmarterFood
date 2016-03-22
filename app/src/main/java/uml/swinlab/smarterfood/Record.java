@@ -20,6 +20,7 @@ public class Record {
 
     public final String filePath = Environment.getExternalStorageDirectory().getPath() + File.separator + "SmartFood";
     public final String filename = filePath + File.separator + "FoodLog.txt";
+    private String TAG = "Record";
     public Record() {
         File file = new File(filePath);
         try {
@@ -30,7 +31,7 @@ public class Record {
             file = new File(filename);
             if (!file.exists()) {
                 file.createNewFile();
-                Log.e("FileCreate", "File doesn't exist");
+                Log.e(TAG, "File doesn't exist");
             }
         } catch (IOException e){
             e.printStackTrace();
@@ -45,7 +46,7 @@ public class Record {
 
         file = new File(filename);
         if(!file.exists()){
-            Log.e("FileWrite", "File doesn't exist");
+            Log.e(TAG, "File doesn't exist");
         }
 
         FileOutputStream outputStream = null;

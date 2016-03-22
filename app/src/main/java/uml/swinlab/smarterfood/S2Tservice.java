@@ -29,6 +29,7 @@ public class S2Tservice extends Service {
     protected Intent mSpeechRecognizerIntent;
     private String text = " ";
     private T2Sservice speech;
+    private String TAG = "S2Tservice";
 
     private BroadcastReceiver receiverAtT2S = new BroadcastReceiver() {
 
@@ -46,14 +47,14 @@ public class S2Tservice extends Service {
                     }
                 }
                 if(msg.equals("Start")){
-                    Log.e("Start", "---------->");
+                    Log.d(TAG, "start ---------->");
                     dataArray[0] = formatTime();
-                    Log.e("LogData", dataArray[0]);
+                    //Log.e("LogData", dataArray[0]);
                 }
                 else if(msg.equals("End")){
-                    Log.e("End", "--------------->");
+                    Log.d(TAG, "end --------------->");
                     dataArray[1] = formatTime();
-                    Log.e("LogData", dataArray[0] + ":::::" + dataArray[1]);
+                    //Log.e("LogData", dataArray[0] + ":::::" + dataArray[1]);
                     speech.speakOut(0);
 
                     msgIntent.setAction("startRecording");
@@ -61,24 +62,22 @@ public class S2Tservice extends Service {
                 }
             }
             if(intent.getAction().equals("startRecording")){
-                Log.d("Receiver", "Get start Recording");
+                Log.d(TAG, "Get start Recording");
                 initialRecognizer();
                 mSpeechRecognizer.startListening(mSpeechRecognizerIntent);
 
             }
             if(intent.getAction().equals("stopRecording")){
-                Log.d("Receiver", "Get stop recording");
+                Log.d(TAG, "Get stop recording");
                 mSpeechRecognizer.stopListening();
                 mSpeechRecognizer.cancel();
-
-                Log.e("Data", text);
 
                 if(text.equals("no")){
                     dataArray[2] = "Not Eating";
                     dataArray[3] = text;
                 }
-                else if(text.equals("yes")){
-                    Log.e("Stoprecording", "yes");
+                else if(text.equals("yes") || text.equals("yeah")){
+                    Log.d(TAG, "yes");
                     dataArray[3] = text;
                     speech.speakOut(1);
 
@@ -97,9 +96,8 @@ public class S2Tservice extends Service {
                     updateIntent.setAction("LOG_UPDATA");
                     sendBroadcast(updateIntent);
 
-                    Log.e("Data", data.getStartTime() + " ::: " + data.getEndTime() + " ::: " + data.getFoodInfo() + " ;;; " + data.getIsConfirmed());
+                    Log.d(TAG, "Data check: " + data.getStartTime() + " ::: " + data.getEndTime() + " ::: " + data.getFoodInfo() + " ;;; " + data.getIsConfirmed());
                     data.empty();
-                    Toast.makeText(context, "Finish", Toast.LENGTH_LONG).show();
                 }
 
             }
@@ -162,31 +160,31 @@ public class S2Tservice extends Service {
     //function for S2T
     class SpeechRecognitionListener implements RecognitionListener
     {
-        private String TAG = "Listener";
+        private String TAG = "SpeechRecognitionListener";
         public String tempText;
         @Override
         public void onBeginningOfSpeech()
         {
-            Log.d(TAG, "on Beginning of speech");
+            //Log.d(TAG, "on Beginning of speech");
         }
 
         @Override
         public void onBufferReceived(byte[] buffer)
         {
-            Log.d(TAG, "on Buffer Received");
+            //Log.d(TAG, "on Buffer Received");
         }
 
         @Override
         public void onEndOfSpeech()
         {
-            Log.d(TAG, "on end of speech");
+            //Log.d(TAG, "on end of speech");
 
         }
 
         @Override
         public void onError(int error)
         {
-            Log.d(TAG, "on Error");
+            //Log.d(TAG, "on Error");
             String message;
             switch (error) {
                 case SpeechRecognizer.ERROR_AUDIO:
@@ -227,31 +225,31 @@ public class S2Tservice extends Service {
         @Override
         public void onEvent(int eventType, Bundle params)
         {
-            Log.d(TAG, "on event");
+            //Log.d(TAG, "on event");
         }
 
         @Override
         public void onPartialResults(Bundle partialResults)
         {
-            Log.d(TAG, "on partial results");
+            //Log.d(TAG, "on partial results");
         }
 
         @Override
         public void onReadyForSpeech(Bundle params)
         {
-            Log.e(TAG, "on Ready for speech");
+            //Log.e(TAG, "on Ready for speech");
 
         }
 
         @Override
         public void onResults(Bundle results)
         {
-            Log.d(TAG, "on Result");
+            //Log.d(TAG, "on Result");
             try {
                 ArrayList<String> matches = results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
                 if (!matches.isEmpty()) {
                     tempText = matches.get(0);
-                    Log.e(TAG, tempText);
+                    //Log.e(TAG, tempText);
                     setText(tempText);
 
                     Intent i = new Intent();
@@ -267,7 +265,7 @@ public class S2Tservice extends Service {
         @Override
         public void onRmsChanged(float rmsdB)
         {
-            Log.d(TAG, "on Rms changed");
+            //Log.d(TAG, "on Rms changed");
         }
 
     }

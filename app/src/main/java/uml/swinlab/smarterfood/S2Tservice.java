@@ -92,6 +92,11 @@ public class S2Tservice extends Service {
                 LogData data = new LogData(dataArray);
                 if(data.iscompleted()) {
                     new Record().writeToFile(data);
+
+                    Intent updateIntent = new Intent();
+                    updateIntent.setAction("LOG_UPDATA");
+                    sendBroadcast(updateIntent);
+
                     Log.e("Data", data.getStartTime() + " ::: " + data.getEndTime() + " ::: " + data.getFoodInfo() + " ;;; " + data.getIsConfirmed());
                     data.empty();
                     Toast.makeText(context, "Finish", Toast.LENGTH_LONG).show();

@@ -18,26 +18,40 @@ import java.util.ArrayList;
  */
 public class Record {
 
-    public static String filePath = Environment.getExternalStorageDirectory().getPath() + File.separator + "SmartFood";
-    public static String filename = filePath + File.separator + "FoodLog.txt";
+    public final String filePath = Environment.getExternalStorageDirectory().getPath() + File.separator + "SmartFood";
+    public final String filename = filePath + File.separator + "FoodLog.txt";
     public Record() {
+        File file = new File(filePath);
+        try {
+            if (!file.exists()) {
+                file.mkdirs();
+            }
 
+            file = new File(filename);
+            if (!file.exists()) {
+                file.createNewFile();
+                Log.e("FileCreate", "File doesn't exist");
+            }
+        } catch (IOException e){
+            e.printStackTrace();
+        }
     }
 
-    public static void writeToFile(LogData data) {
+
+    public void writeToFile(LogData data) {
         File file = new File(filePath);
         if(!file.exists())
             file.mkdirs();
 
         file = new File(filename);
         if(!file.exists()){
-            Log.e("FileWrite", "File creation is failed");
+            Log.e("FileWrite", "File doesn't exist");
         }
 
         FileOutputStream outputStream = null;
         try{
             outputStream = new FileOutputStream(file, true);
-            String msg = data.startTime + "\n" + data.endTime + "\n" + data.foodInfo + "\n" + data.isConfirmed + "\n";
+            String msg = data.startTime + "%" + data.endTime + "%" + data.foodInfo + "%" + data.isConfirmed + "\n";
             outputStream.write(msg.getBytes("UTF-8"));
             outputStream.flush();
             outputStream.close();
@@ -50,37 +64,30 @@ public class Record {
             e.printStackTrace();
         }
     }
-    
-    public static ArrayList<LogData> readFromFile(){
-        ArrayList<LogData> log = new ArrayList<LogData>();
+
+    public ArrayList<LogData> readFromFile(){
+        ArrayList<String> log = new ArrayList<String>();
+        ArrayList<LogData> finalLog = new ArrayList<LogData>();
 
         try {
             File file = new File(filename);
             FileInputStream fin = new FileInputStream(file);
             DataInputStream dio = new DataInputStream(fin);
-            String strLine = dio.readLine();
 
-            while(strLine != null) {
-                //Log.d("ReadLine", strLine);
-                LogData data = new LogData(strLine);
-                //data.setStartTime(strLine);
-                data.setEndTime(dio.readLine());
-                data.setFoodInfo(dio.readLine());
-                data.setIsConfirmed(dio.readLine());
-                Log.e("Read from File", data.getStartTime() + " ::: " + data.getEndTime() + " ::: " + data.getFoodInfo() + " ::: " + data.getIsConfirmed());
-                log.add(data);
-                for(int i=0; i<log.size(); i++)
-                    Log.d("Read from File", log.get(i).getStartTime() + " ::: " + log.get(i).getEndTime() + " ::: " + log.get(i).getFoodInfo() + " ::: " + log.get(i).getIsConfirmed());
-                strLine = dio.readLine();
-
+            String strline = dio.readLine();
+            while( strline!= null){
+                log.add(strline);
+                strline = dio.readLine();
             }
+
         } catch (FileNotFoundException e){
             e.printStackTrace();
         } catch (IOException e){
             e.printStackTrace();
         }
-        for(int i=0; i<log.size(); i++)
-            Log.e("Read from File", log.get(i).getStartTime() + " ::: " + log.get(i).getEndTime() + " ::: " + log.get(i).getFoodInfo() + " ::: " + log.get(i).getIsConfirmed());
-        return log;
+        for(int i=0; i<log.size(); i++){
+            finalLog.add(new LogData(log.get(i).split("%")));
+        }
+        return finalLog;
     }
 }

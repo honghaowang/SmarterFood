@@ -15,7 +15,10 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 import android.widget.Toast;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+
 /**
  * Created by kinse on 3/18/2016.
  */
@@ -31,10 +34,10 @@ public class S2Tservice extends Service {
 
         private String msg;
         Intent msgIntent = new Intent();
+        String[] dataArray = new String[4];
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            LogData data = null;
             if(intent.getAction().equals("Audio_Detection_Result")){
                 Bundle extras = intent.getExtras();
                 if (extras != null) {
@@ -44,13 +47,13 @@ public class S2Tservice extends Service {
                 }
                 if(msg.equals("Start")){
                     Log.e("Start", "---------->");
-                    data = new LogData(LogData.formatTime());
-                    Log.e("LogData", data.startTime);
+                    dataArray[0] = formatTime();
+                    Log.e("LogData", dataArray[1]);
                 }
                 else if(msg.equals("End")){
                     Log.e("End", "--------------->");
-                    data.setEndTime(LogData.formatTime());
-                    Log.e("LogData", LogData.startTime + ":::::" + LogData.endTime);
+                    dataArray[1] = formatTime();
+                    Log.e("LogData", dataArray[0] + ":::::" + dataArray[1]);
                     speech.speakOut(0);
 
                     msgIntent.setAction("startRecording");
@@ -68,27 +71,24 @@ public class S2Tservice extends Service {
                 Log.e("Data", text);
 
                 if(text.equals("no")){
-                    data.setFoodInfo(" ");
-                    data.setIsConfirmed(text);
-                    Toast.makeText(context, text, Toast.LENGTH_LONG).show();
+                    dataArray[2] = "Not Eating";
+                    dataArray[3] = text;
                 }
                 else if(text.equals("yes")){
                     Log.e("Stoprecording", "yes");
-                    data.setIsConfirmed(text);
+                    dataArray[3] = text;
                     speech.speakOut(1);
 
                     msgIntent.setAction("startRecording");
                     sendBroadcast(msgIntent);
-                    Toast.makeText(context, text, Toast.LENGTH_LONG).show();
                 }
                 else {
-                    data.setFoodInfo(text);
-                    Toast.makeText(context, text, Toast.LENGTH_LONG).show();
+                    dataArray[2] = text;
                 }
 
-
+                LogData data = new LogData(dataArray);
                 if(data.iscompleted()) {
-                    Record.writeToFile(data);
+                    new Record().writeToFile(data);
                     Log.e("Data", data.getStartTime() + " ::: " + data.getEndTime() + " ::: " + data.getFoodInfo() + " ;;; " + data.getIsConfirmed());
                     data.empty();
                     Toast.makeText(context, "Finish", Toast.LENGTH_LONG).show();
@@ -97,6 +97,11 @@ public class S2Tservice extends Service {
             }
         }
     };
+
+    public static String formatTime(){
+        String currentTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+        return currentTime;
+    }
 
     public void setText(String temp){
         text = temp;
@@ -256,4 +261,3 @@ public class S2Tservice extends Service {
 
 
 }
-

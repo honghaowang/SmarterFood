@@ -7,28 +7,42 @@ import java.util.Date;
  * Created by kinse on 3/18/2016.
  */
 public class LogData {
-    public static String startTime = null;
-    public static  String endTime = null;
-    public static  String foodInfo = null;
-    public static  String isConfirmed = null;
+    public String startTime = null;
+    public String endTime = null;
+    public String foodInfo = null;
+    public String isConfirmed = null;
 
+    public LogData(){}
     public LogData(String start){
         startTime = start;
     }
 
-    public static void setStartTime(String start){
+    public LogData(String start, String end, String food, String confirm){
+        startTime = start;
+        endTime = end;
+        foodInfo = food;
+        isConfirmed = confirm;
+    }
+
+    public LogData(String[] splitResult){
+        startTime = splitResult[0];
+        endTime = splitResult[1];
+        foodInfo = splitResult[2];
+        isConfirmed = splitResult[3];
+    }
+    public void setStartTime(String start){
         startTime = start;
     }
 
-    public static void setEndTime(String end){
+    public void setEndTime(String end){
         endTime = end;
     }
 
-    public static void setFoodInfo(String food){
+    public void setFoodInfo(String food){
         foodInfo = food;
     }
 
-    public static void setIsConfirmed(String confirm){
+    public void setIsConfirmed(String confirm){
         isConfirmed = confirm;
     }
 
@@ -40,12 +54,9 @@ public class LogData {
 
     public String getIsConfirmed(){ return isConfirmed;}
 
-    public static String formatTime(){
-        String currentTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
-        return currentTime;
-    }
 
-    public static Boolean iscompleted(){
+
+    public Boolean iscompleted(){
         if(startTime == null)
             return false;
         else if(endTime == null)
@@ -58,7 +69,7 @@ public class LogData {
             return true;
     }
 
-    public static void empty(){
+    public void empty(){
         startTime = null;
         endTime = null;
         foodInfo = null;

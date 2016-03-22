@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             if(intent.getAction().equals("LOG_UPDATA")){
-                
+
                 data = new Record().readFromFile();
                 logAdapter.notifyDataSetChanged();
             }
